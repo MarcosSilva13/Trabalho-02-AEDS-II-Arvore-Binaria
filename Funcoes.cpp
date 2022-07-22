@@ -45,7 +45,13 @@ No *root = NULL;
 
 void MainMenu(); // Menu principal do programa para a escolha das opcoes
 
-void SearchMenu();
+void SearchMenu(); // Função para escolha da opção de pesquisa, se é por cpf ou por nome
+
+void SearchHeader(int option); // Função para exibir os cabeçalhos do tipo de pesquisa
+
+void Search(int option); // Função para o controle da pesquisa, indicando qual operação será executada
+
+No* SearchByCpf(No *treeByCPF, char cpf[]); // Função que percorre a arvore procurando pelo cpf do funcionário
 
 void Register(); // Função para cadastrar os dados do funcionário da struct
 
@@ -55,8 +61,8 @@ void GetDataEmployee(No *no); // Função que percorre os dados do funcionário
 
 void PrintData(No *no); // Função que imprimi os dados encontrados do funcionário
 
-
-void MainMenu(){
+void MainMenu()
+{
 
     system("color 0E");
     cout << "  \n        ��������������������������������";
@@ -78,26 +84,17 @@ void MainMenu(){
     cout << "  \n        ��������������������������������\n\n";
 }
 
-void SearchMenu(){
-    int option;
-    cout << "*******************************************\n";
-    cout << "*            BUSCAR FUNCIONÁRIO           *\n";
-    cout << "*******************************************\n\n";
-
+void SearchMenu()
+{
+    int option = 0; // variavel para escolha da opção de buscar funcionário
+    
     do
     {
-        cout << "1 - Buscar por CPF\n2 - Buscar por Nome\n3 - Cancelar\nEscolha uma opção: ";
+        cout << "*******************************************\n";
+        cout << "*            BUSCAR FUNCIONÁRIO           *\n";
+        cout << "*******************************************\n\n";
+        cout << "1 - Buscar por CPF\n2 - Buscar por Nome\n3 - Cancelar\n\nEscolha uma opção: ";
         cin >> option;
-
-        switch (option)
-        {
-        case 1:
-            cout << "Escolheu: " << option << endl;
-            break;
-        case 2:
-            cout << "Escolheu: " << option << endl;
-            break;
-        }
 
         if (option < 1 || option > 3)
         {
@@ -106,12 +103,70 @@ void SearchMenu(){
             Sleep(1500);
             system("cls");
         }
-        
-
+        else 
+        {
+            Search(option); // passando a opção escolhida para a função Search
+        }
     } while (option != 3);
 }
 
-void Register(){
+void SearchHeader(int option){
+    system("cls");
+
+    switch (option)
+    {
+    case 1:
+        cout << "*******************************************\n";
+        cout << "*              BUSCA POR CPF              *\n";
+        cout << "*******************************************\n\n";
+        break;
+    case 2:
+        cout << "*******************************************\n";
+        cout << "*             BUSCAR POR NOME             *\n";
+        cout << "*******************************************\n\n";
+        break;
+    default:
+        cout << "Opção inválida!" << endl;
+        break;
+    }
+    
+}
+
+void Search(int option){
+    char cpf[14]; // variável para guardar o cpf do funcionário para a buscar
+    char name[50]; // variável para guardar o nome do funcionário para buscar
+    No *result = NULL; // ponteiro para receber a referência da função SearchByCpf e SearchByName
+
+    switch (option)
+    {
+        case 1: //arrumar em mais funções e comparar se for null para nao dar erro na hora de mostrar
+            SearchHeader(1);
+            cout << "Informe o cpf: ";
+            cin.ignore();
+            cin.get(cpf, 14);
+            result = SearchByCpf(treeByCPF, cpf);
+            if (result != NULL)
+            {
+                PrintData(result);
+            } 
+            else 
+            {
+                cout << "\nFuncionário não encontrado!" << endl << endl;
+                system("pause");
+                system("cls");
+            }
+            break;
+        case 2:
+            SearchHeader(2);
+            break;
+        default:
+            cout << "Algum erro ocorreu" << endl << endl;
+            break;
+    }
+}
+
+void Register()
+{
     Info empInfo;
 
     cout << "*******************************************\n";
@@ -120,11 +175,11 @@ void Register(){
 
     cout << "Informe a matricula: ";
     cin >> empInfo.registration;
-    
+
     cout << "\nInforme o cpf: ";
     cin.ignore();
     cin.get(empInfo.cpf, 14);
-    
+
     cout << "\nInforme o nome: ";
     cin.ignore();
     cin.get(empInfo.name, 50);
@@ -169,11 +224,14 @@ void Register(){
     cin.ignore();
     cin.get(empInfo.address.zipCode, 10);
 
-    // retornando mensagem se foi possivel adicionar o funcionário na árvore 
-    if (Add(empInfo) == 1){
+    // retornando mensagem se foi possivel adicionar o funcionário na árvore
+    if (Add(empInfo) == 1)
+    {
         cout << "\nFuncionário cadastrado com sucesso!" << endl;
         Sleep(1500);
-    } else {
+    }
+    else
+    {
         cout << "\nNão foi possivel adicionar!" << endl;
         Sleep(1500);
     }
@@ -181,8 +239,9 @@ void Register(){
     system("cls");
 }
 
-int Add(Info empInfo){
-    
+int Add(Info empInfo)
+{
+
     No *newNo = new No;
     newNo->info = empInfo;
     newNo->left = NULL;
@@ -226,28 +285,52 @@ int Add(Info empInfo){
     return 1;
 }
 
-void GetDataEmployee(No *no){
+No* SearchByCpf(No *treeByCPF, char cpf[])
+{
+    No *current = treeByCPF;
+    while (current != NULL)
+    {
+        if (strcmp(cpf, current->info.cpf) == 0)
+        {
+            return current;
+        }
+        else if (strcmp(cpf, current->info.cpf) < 0)
+        {
+            return SearchByCpf(root->left, cpf);
+        }
+        else if (strcmp(cpf, current->info.cpf) > 0)
+        {
+            return SearchByCpf(root->right, cpf);
+        }
+    }
+    return NULL;
+}
+
+void GetDataEmployee(No *no)
+{
     /*cout << "*******************************************\n";
     cout << "*           DADOS DO FUNCIONÁRIO          *\n";
     cout << "*                 EM ORDEM                *\n";
     cout << "*******************************************\n\n";*/
 
-    if (no != NULL){
+    if (no != NULL)
+    {
         PrintData(no->left);
         GetDataEmployee(no);
         PrintData(no->right);
     }
 }
 
-void PrintData(No *no){
+void PrintData(No *no)
+{
     cout << "-------------------------------------------" << endl;
     cout << "Matricula: " << no->info.registration << endl;
     cout << "Nome: " << no->info.name << endl;
     cout << "Cpf: " << no->info.cpf << endl;
     cout << "Cargo: " << no->info.role << endl;
     cout << "Telefone: " << no->info.telephone << endl;
-    cout << "Data de nascimento: " << no->info.birthDate.day << "/" << no->info.birthDate.month << "/" 
-                                    << no->info.birthDate.year << endl;
+    cout << "Data de nascimento: " << no->info.birthDate.day << "/" << no->info.birthDate.month << "/"
+         << no->info.birthDate.year << endl;
     cout << "Endereço" << endl;
     cout << "Rua: " << no->info.address.street << endl;
     cout << "Número: " << no->info.address.number << endl;
@@ -255,5 +338,6 @@ void PrintData(No *no){
     cout << "Cidade: " << no->info.address.city << endl;
     cout << "Estado: " << no->info.address.state << endl;
     cout << "Cep: " << no->info.address.zipCode << endl;
-    cout << "-------------------------------------------" << endl << endl;
+    cout << "-------------------------------------------" << endl
+         << endl;
 }
