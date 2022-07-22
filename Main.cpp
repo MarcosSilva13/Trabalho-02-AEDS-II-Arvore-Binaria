@@ -26,6 +26,17 @@ int main()
         case 1:
             Register();
             break;
+        case 2:
+            SearchMenu();
+            system("cls");
+            break;
+        case 3:
+            break;
+        case 4:
+            GetDataEmployee(root);
+            system("pause");
+            system("cls");
+            break;
         }
 
         if (option < 1 || option > 5)
