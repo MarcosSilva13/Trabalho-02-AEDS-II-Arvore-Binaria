@@ -33,7 +33,7 @@ typedef struct Info
 
 typedef struct No
 {
-    Info *info;
+    Info info;
     No *left;
     No *right;
 };
@@ -44,14 +44,15 @@ No *treeByName = NULL;
 No *root = NULL;
 
 void MainMenu(); // Menu principal do programa para a escolha das opcoes
-int SearchMenu();
-void Register();
-int add(Info *empInfo);
+
+void Register(); // Função para cadastrar os dados do funcionário da struct
+
+int Add(Info empInfo); // Função que insere na árvore binária
 
 
 void MainMenu(){
 
-    system("color 03");
+    system("color 0E");
     cout << "  \n        ��������������������������������";
     cout << "  \n        �                              �";
     cout << "  \n        �          SISTEMA RH          �";
@@ -69,9 +70,6 @@ void MainMenu(){
     cout << "  \n        � 5 - Sair                     �";
     cout << "  \n        �                              �";
     cout << "  \n        ��������������������������������\n\n";
-}
-int SearchMenu(){
-
 }
 
 void Register(){
@@ -118,15 +116,18 @@ void Register(){
     cout << "Cep: ";
     cin >> empInfo.address.zipCode;
 
-    if (add(&empInfo) == 1){
-        cout << "\nFuncionario cadastrado!" << endl;
+    if (Add(empInfo) == 1){
+        cout << "\nFuncionário cadastrado com sucesso!" << endl;
+        Sleep(1500);
     } else {
         cout << "\nNão foi possivel adicionar!" << endl;
+        Sleep(1500);
     }
 
+    system("cls");
 }
 
-int add(Info *empInfo){
+int Add(Info empInfo){
     
     No *newNo = new No;
     newNo->info = empInfo;
@@ -146,7 +147,7 @@ int add(Info *empInfo){
     while (current != NULL)
     {
         previous = current;
-        if (empInfo->registration < current->info->registration)
+        if (empInfo.registration < current->info.registration)
         {
             current = current->left;
         }
@@ -156,11 +157,11 @@ int add(Info *empInfo){
         }
     }
 
-    if (empInfo->registration < previous->info->registration)
+    if (empInfo.registration < previous->info.registration)
     {
         previous->left = newNo;
     }
-    else if (empInfo->registration > previous->info->registration)
+    else if (empInfo.registration > previous->info.registration)
     {
         previous->right = newNo;
     }
