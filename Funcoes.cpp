@@ -38,9 +38,6 @@ typedef struct No
     No *right;
 };
 
-No *treeByCPF = NULL;
-No *treeByName = NULL;
-
 No *root = NULL;
 
 void MainMenu(); // Menu principal do programa para a escolha das opcoes
@@ -51,19 +48,18 @@ void SearchHeader(int option); // Função para exibir os cabeçalhos do tipo de
 
 void Search(int option); // Função para o controle da pesquisa, indicando qual operação será executada
 
-No* SearchByCpf(No *treeByCPF, char cpf[]); // Função que percorre a arvore procurando pelo cpf do funcionário
+No *SearchByCpf(No *treeByCPF, char cpf[]); // Função que percorre a arvore procurando pelo cpf do funcionário
 
 void Register(); // Função para cadastrar os dados do funcionário da struct
 
 int Add(Info empInfo); // Função que insere na árvore binária
 
-void GetDataEmployee(No *no); // Função que percorre os dados do funcionário
+void GetDataEmployee(No *node); // Função que percorre os dados do funcionário
 
-void PrintData(No *no); // Função que imprimi os dados encontrados do funcionário
+void PrintData(No *node); // Função que imprimi os dados encontrados do funcionário
 
 void MainMenu()
 {
-
     system("color 0E");
     cout << "  \n        ��������������������������������";
     cout << "  \n        �                              �";
@@ -87,7 +83,7 @@ void MainMenu()
 void SearchMenu()
 {
     int option = 0; // variavel para escolha da opção de buscar funcionário
-    
+
     do
     {
         cout << "*******************************************\n";
@@ -96,6 +92,7 @@ void SearchMenu()
         cout << "1 - Buscar por CPF\n2 - Buscar por Nome\n3 - Cancelar\n\nEscolha uma opção: ";
         cin >> option;
 
+        // condição caso seja digitado um valor menor que 1 ou maior que 3
         if (option < 1 || option > 3)
         {
             system("cls");
@@ -103,14 +100,15 @@ void SearchMenu()
             Sleep(1500);
             system("cls");
         }
-        else 
+        else
         {
             Search(option); // passando a opção escolhida para a função Search
         }
     } while (option != 3);
 }
 
-void SearchHeader(int option){
+void SearchHeader(int option)
+{
     system("cls");
 
     switch (option)
@@ -129,102 +127,134 @@ void SearchHeader(int option){
         cout << "Opção inválida!" << endl;
         break;
     }
-    
 }
 
-void Search(int option){
-    char cpf[14]; // variável para guardar o cpf do funcionário para a buscar
-    char name[50]; // variável para guardar o nome do funcionário para buscar
+void Search(int option)
+{
+    char cpf[14];      // variável para guardar o cpf do funcionário para a buscar
+    char name[50];     // variável para guardar o nome do funcionário para buscar
     No *result = NULL; // ponteiro para receber a referência da função SearchByCpf e SearchByName
+    No *treeByCpf = root; // ponteiro para receber a referência da raiz e ser usado na função SearchByCpf
+    No *treeByName = root; // ponteiro para receber a referência da raiz e ser usado na função SearchByName
 
     switch (option)
     {
-        case 1: //arrumar em mais funções e comparar se for null para nao dar erro na hora de mostrar
-            SearchHeader(1);
-            cout << "Informe o cpf: ";
-            cin.ignore();
-            cin.get(cpf, 14);
-            result = SearchByCpf(treeByCPF, cpf);
-            if (result != NULL)
-            {
-                PrintData(result);
-            } 
-            else 
-            {
-                cout << "\nFuncionário não encontrado!" << endl << endl;
-                system("pause");
-                system("cls");
-            }
-            break;
-        case 2:
-            SearchHeader(2);
-            break;
-        default:
-            cout << "Algum erro ocorreu" << endl << endl;
-            break;
+    case 1:
+        SearchHeader(1); // função do cabeçalho
+        cout << "Informe o cpf: ";
+        cin.ignore();
+        cin.get(cpf, 14);                     // lendo o valor do cpf para busca
+        result = SearchByCpf(treeByCpf, cpf); // guardando a referência do resultado na busca
+
+        if (result != NULL)
+        {   
+            cout << "\n\t ***Funcionário Encontrado***" << endl;
+            PrintData(result); // passando a referencia para a função para exibir os dados encontrados
+            system("pause");
+            system("cls");
+        }
+        else
+        {
+            cout << "\nFuncionário não encontrado!" << endl
+                 << endl;
+            system("pause");
+            system("cls");
+        }
+        break;
+    case 2:
+        SearchHeader(2); // função do cabeçalho
+        // codigo aqui 
+        break;
+    default:
+        cout << "Algum erro ocorreu" << endl
+             << endl;
+        break;
     }
+}
+
+No *SearchByCpf(No *treeByCPF, char cpf[])
+{
+    No *current = treeByCPF;
+    while (current != NULL)
+    {
+        if (strcmp(cpf, current->info.cpf) == 0) // compara os valores do cpf, se for 0 são iguais
+        {
+            return current; // retorna a referência
+        }
+        else if (strcmp(cpf, current->info.cpf) < 0) // compara os valores do cpf, se for menor que 0, a primeira
+                                                     // string é menor que a segunda
+        {
+            return SearchByCpf(treeByCPF->left, cpf); // chama a função recursivamente indo para a esquerda da árvore
+        }
+        else if (strcmp(cpf, current->info.cpf) > 0) // compara os valores do cpf, se for maior que 0, a primeira
+                                                     // string é maior que a segunda
+        {
+            return SearchByCpf(treeByCPF->right, cpf); // chama a função recursivamente indo para a direita da árvore
+        }
+    }
+    return NULL; // retorna null se não encontrar nada 
 }
 
 void Register()
 {
-    Info empInfo;
+    Info empInfo; // variável da struct Info
 
     cout << "*******************************************\n";
     cout << "*         CADASTRO DE FUNCIONÁRIO         *\n";
     cout << "*******************************************\n\n";
 
     cout << "Informe a matricula: ";
-    cin >> empInfo.registration;
+    cin >> empInfo.registration; // lendo a matricula
 
     cout << "\nInforme o cpf: ";
     cin.ignore();
-    cin.get(empInfo.cpf, 14);
+    cin.get(empInfo.cpf, 14); // lendo o cpf
 
     cout << "\nInforme o nome: ";
     cin.ignore();
-    cin.get(empInfo.name, 50);
+    cin.get(empInfo.name, 50); // lendo o nome
 
     cout << "\nInforme o cargo: ";
     cin.ignore();
-    cin.get(empInfo.role, 30);
+    cin.get(empInfo.role, 30); // lendo o cargo
 
     cout << "\nInforme o telefone: ";
     cin.ignore();
-    cin.get(empInfo.telephone, 15);
+    cin.get(empInfo.telephone, 15); // lendo o telefone
 
-    cout << "\nInforme a data de nascimento" << endl;
+    cout << "\nInforme a data de nascimento" << endl; // leitura da data de nascimento
     cout << "Dia: ";
-    cin >> empInfo.birthDate.day;
+    cin >> empInfo.birthDate.day; // lendo o dia
     cout << "Mês: ";
-    cin >> empInfo.birthDate.month;
+    cin >> empInfo.birthDate.month; // lendo o mês
     cout << "Ano: ";
-    cin >> empInfo.birthDate.year;
+    cin >> empInfo.birthDate.year; // lendo o ano
 
-    cout << "\nInforme o endereco" << endl;
+    cout << "\nInforme o endereco" << endl; // leitura do endereço
     cout << "Rua: ";
     cin.ignore();
-    cin.get(empInfo.address.street, 30);
+    cin.get(empInfo.address.street, 30); // lendo a rua
 
     cout << "Número: ";
-    cin >> empInfo.address.number;
+    cin >> empInfo.address.number; // lendo o número
 
     cout << "Bairro: ";
     cin.ignore();
-    cin.get(empInfo.address.district, 20);
+    cin.get(empInfo.address.district, 20); // lendo o bairro
 
     cout << "Cidade: ";
     cin.ignore();
-    cin.get(empInfo.address.city, 20);
+    cin.get(empInfo.address.city, 20); // lendo a cidade
 
     cout << "Estado (somente a sigla): ";
     cin.ignore();
-    cin.get(empInfo.address.state, 3);
+    cin.get(empInfo.address.state, 3); // lendo o estado
 
     cout << "Cep: ";
     cin.ignore();
-    cin.get(empInfo.address.zipCode, 10);
+    cin.get(empInfo.address.zipCode, 10); // lendo o cep
 
-    // retornando mensagem se foi possivel adicionar o funcionário na árvore
+    // retornando mensagem se foi possivel adicionar o funcionário na árvore ou não
     if (Add(empInfo) == 1)
     {
         cout << "\nFuncionário cadastrado com sucesso!" << endl;
@@ -241,15 +271,14 @@ void Register()
 
 int Add(Info empInfo)
 {
-
-    No *newNo = new No;
-    newNo->info = empInfo;
-    newNo->left = NULL;
-    newNo->right = NULL;
+    No *newNode = new No;
+    newNode->info = empInfo;
+    newNode->left = NULL;
+    newNode->right = NULL;
 
     if (root == NULL)
     {
-        root = newNo;
+        root = newNode;
 
         return 1;
     }
@@ -257,6 +286,7 @@ int Add(Info empInfo)
     No *current = root;
     No *previous = NULL;
 
+    // inserindo na arvore comparando pelo número da matricula
     while (current != NULL)
     {
         previous = current;
@@ -272,11 +302,11 @@ int Add(Info empInfo)
 
     if (empInfo.registration < previous->info.registration)
     {
-        previous->left = newNo;
+        previous->left = newNode;
     }
     else if (empInfo.registration > previous->info.registration)
     {
-        previous->right = newNo;
+        previous->right = newNode;
     }
     else
     {
@@ -285,59 +315,38 @@ int Add(Info empInfo)
     return 1;
 }
 
-No* SearchByCpf(No *treeByCPF, char cpf[])
-{
-    No *current = treeByCPF;
-    while (current != NULL)
-    {
-        if (strcmp(cpf, current->info.cpf) == 0)
-        {
-            return current;
-        }
-        else if (strcmp(cpf, current->info.cpf) < 0)
-        {
-            return SearchByCpf(root->left, cpf);
-        }
-        else if (strcmp(cpf, current->info.cpf) > 0)
-        {
-            return SearchByCpf(root->right, cpf);
-        }
-    }
-    return NULL;
-}
-
-void GetDataEmployee(No *no)
+void GetDataEmployee(No *node)
 {
     /*cout << "*******************************************\n";
     cout << "*           DADOS DO FUNCIONÁRIO          *\n";
     cout << "*                 EM ORDEM                *\n";
     cout << "*******************************************\n\n";*/
 
-    if (no != NULL)
+    if (node != NULL)
     {
-        PrintData(no->left);
-        GetDataEmployee(no);
-        PrintData(no->right);
+        GetDataEmployee(node->left);
+        PrintData(node);
+        GetDataEmployee(node->right);
     }
 }
 
-void PrintData(No *no)
+void PrintData(No *node)
 {
     cout << "-------------------------------------------" << endl;
-    cout << "Matricula: " << no->info.registration << endl;
-    cout << "Nome: " << no->info.name << endl;
-    cout << "Cpf: " << no->info.cpf << endl;
-    cout << "Cargo: " << no->info.role << endl;
-    cout << "Telefone: " << no->info.telephone << endl;
-    cout << "Data de nascimento: " << no->info.birthDate.day << "/" << no->info.birthDate.month << "/"
-         << no->info.birthDate.year << endl;
+    cout << "Matricula: " << node->info.registration << endl;
+    cout << "Nome: " << node->info.name << endl;
+    cout << "Cpf: " << node->info.cpf << endl;
+    cout << "Cargo: " << node->info.role << endl;
+    cout << "Telefone: " << node->info.telephone << endl;
+    cout << "Data de nascimento: " << node->info.birthDate.day << "/" << node->info.birthDate.month << "/"
+         << node->info.birthDate.year << endl;
     cout << "Endereço" << endl;
-    cout << "Rua: " << no->info.address.street << endl;
-    cout << "Número: " << no->info.address.number << endl;
-    cout << "Bairro: " << no->info.address.district << endl;
-    cout << "Cidade: " << no->info.address.city << endl;
-    cout << "Estado: " << no->info.address.state << endl;
-    cout << "Cep: " << no->info.address.zipCode << endl;
+    cout << "Rua: " << node->info.address.street << endl;
+    cout << "Número: " << node->info.address.number << endl;
+    cout << "Bairro: " << node->info.address.district << endl;
+    cout << "Cidade: " << node->info.address.city << endl;
+    cout << "Estado: " << node->info.address.state << endl;
+    cout << "Cep: " << node->info.address.zipCode << endl;
     cout << "-------------------------------------------" << endl
          << endl;
 }

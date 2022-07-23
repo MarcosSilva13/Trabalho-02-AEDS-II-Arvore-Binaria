@@ -14,7 +14,7 @@ int main()
 
     do
     {
-        MainMenu();
+        MainMenu(); // função do menu principal
 
         cout << "Escolha uma opção: ";
         cin >> option;
@@ -24,21 +24,21 @@ int main()
         switch (option)
         {
         case 1:
-            Register();
+            Register(); // função de cadastro
             break;
         case 2:
-            SearchMenu();
+            SearchMenu(); // função do menu de busca
             system("cls");
             break;
         case 3:
             break;
         case 4:
-            GetDataEmployee(root);
+            GetDataEmployee(root); // função que percorre os dados 
             system("pause");
             system("cls");
             break;
         }
-
+        // condição caso seja digitado um valor menor que 1 ou maior que 5
         if (option < 1 || option > 5)
         {
             system("cls");
