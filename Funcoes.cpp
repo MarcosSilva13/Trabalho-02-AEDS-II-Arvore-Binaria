@@ -50,6 +50,8 @@ void Search(int option); // Função para o controle da pesquisa, indicando qual
 
 No *SearchByCpf(No *treeByCPF, char cpf[]); // Função que percorre a arvore procurando pelo cpf do funcionário
 
+No *SearchByName(No *treeByName, char name[]); // Função que percorre a arvore procurando pelo nome do funcionário
+
 void Register(); // Função para cadastrar os dados do funcionário da struct
 
 int Add(Info empInfo); // Função que insere na árvore binária
@@ -131,10 +133,10 @@ void SearchHeader(int option)
 
 void Search(int option)
 {
-    char cpf[14];      // variável para guardar o cpf do funcionário para a buscar
-    char name[50];     // variável para guardar o nome do funcionário para buscar
-    No *result = NULL; // ponteiro para receber a referência da função SearchByCpf e SearchByName
-    No *treeByCpf = root; // ponteiro para receber a referência da raiz e ser usado na função SearchByCpf
+    char cpf[14];          // variável para guardar o cpf do funcionário para a buscar
+    char name[50];         // variável para guardar o nome do funcionário para buscar
+    No *result = NULL;     // ponteiro para receber a referência da função SearchByCpf e SearchByName
+    No *treeByCpf = root;  // ponteiro para receber a referência da raiz e ser usado na função SearchByCpf
     No *treeByName = root; // ponteiro para receber a referência da raiz e ser usado na função SearchByName
 
     switch (option)
@@ -144,10 +146,10 @@ void Search(int option)
         cout << "Informe o cpf: ";
         cin.ignore();
         cin.get(cpf, 14);                     // lendo o valor do cpf para busca
-        result = SearchByCpf(treeByCpf, cpf); // guardando a referência do resultado na busca
+        result = SearchByCpf(treeByCpf, cpf); // guardando a referência do resultado da busca
 
         if (result != NULL)
-        {   
+        {
             cout << "\n\t ***Funcionário Encontrado***" << endl;
             PrintData(result); // passando a referencia para a função para exibir os dados encontrados
             system("pause");
@@ -163,7 +165,25 @@ void Search(int option)
         break;
     case 2:
         SearchHeader(2); // função do cabeçalho
-        // codigo aqui 
+        cout << "Informe o nome: ";
+        cin.ignore();
+        cin.get(name, 50);                       // lendo o valor do nome para busca
+        result = SearchByName(treeByName, name); // guardando a referência do resultado da busca
+
+        if (result != NULL)
+        {
+            cout << "\n\t ***Funcionário Encontrado***" << endl;
+            PrintData(result); // passando a referencia para a função para exibir os dados encontrados
+            system("pause");
+            system("cls");
+        }
+        else
+        {
+            cout << "\nFuncionário não encontrado!" << endl
+                 << endl;
+            system("pause");
+            system("cls");
+        }
         break;
     default:
         cout << "Algum erro ocorreu" << endl
@@ -192,7 +212,30 @@ No *SearchByCpf(No *treeByCPF, char cpf[])
             return SearchByCpf(treeByCPF->right, cpf); // chama a função recursivamente indo para a direita da árvore
         }
     }
-    return NULL; // retorna null se não encontrar nada 
+    return NULL; // retorna null se não encontrar nada
+}
+
+No *SearchByName(No *treeByName, char name[])
+{
+    No *current = treeByName;
+    while (current != NULL)
+    {
+        if (strcmp(name, current->info.name) == 0) // compara os valores do nome, se for 0 são iguais
+        {
+            return current; // retorna a referência
+        }
+        else if (strcmp(name, current->info.name) < 0) // compara os valores do nome, se for menor que 0, a primeira
+                                                       // string é menor que a segunda
+        {
+            return SearchByName(treeByName->left, name); // chama a função recursivamente indo para a esquerda da árvore
+        }
+        else if (strcmp(name, current->info.name) > 0) // compara os valores do nome, se for maior que 0, a primeira
+                                                       // string é maior que a segunda
+        {
+            return SearchByName(treeByName->right, name); // chama a função recursivamente indo para a direita da árvore
+        }
+    }
+    return NULL; // retorna null se não encontrar nada
 }
 
 void Register()
