@@ -48,13 +48,17 @@ void SearchHeader(int option); // Função para exibir os cabeçalhos do tipo de
 
 void Search(int option); // Função para o controle da pesquisa, indicando qual operação será executada
 
-No *SearchByCpf(No *treeByCPF, char cpf[]); // Função que percorre a arvore procurando pelo cpf do funcionário
+No *SearchByCpf(No *treeByCpf, char cpf[14]); // Função que percorre a arvore procurando pelo cpf do funcionário
 
 No *SearchByName(No *treeByName, char name[]); // Função que percorre a arvore procurando pelo nome do funcionário
 
 void Register(); // Função para cadastrar os dados do funcionário da struct
 
 int Add(Info empInfo); // Função que insere na árvore binária
+
+void RemoveEmployee(); // Função que le qual funcionário será removido
+
+int Remove(int registration); // Função que remove da árvore binária 
 
 void GetDataEmployee(No *node); // Função que percorre os dados do funcionário
 
@@ -102,7 +106,7 @@ void SearchMenu()
             Sleep(1500);
             system("cls");
         }
-        else
+        else if (option == 1 || option == 2)
         {
             Search(option); // passando a opção escolhida para a função Search
         }
@@ -126,16 +130,16 @@ void SearchHeader(int option)
         cout << "*******************************************\n\n";
         break;
     default:
-        cout << "Opção inválida!" << endl;
         break;
     }
 }
 
-void Search(int option)
+void Search(int option) // SENDO CHAR NÃO TA QUERENDO IR PARA A ESQUERDA DA ARVORE
 {
-    char cpf[14];          // variável para guardar o cpf do funcionário para a buscar
-    char name[50];         // variável para guardar o nome do funcionário para buscar
-    No *result = NULL;     // ponteiro para receber a referência da função SearchByCpf e SearchByName
+    char cpf[14];      // variável para guardar o cpf do funcionário para a buscar
+    char name[50];     // variável para guardar o nome do funcionário para buscar
+    No *result = NULL; // ponteiro para receber a referência da função SearchByCpf e SearchByName
+
     No *treeByCpf = root;  // ponteiro para receber a referência da raiz e ser usado na função SearchByCpf
     No *treeByName = root; // ponteiro para receber a referência da raiz e ser usado na função SearchByName
 
@@ -186,33 +190,72 @@ void Search(int option)
         }
         break;
     default:
-        cout << "Algum erro ocorreu" << endl
-             << endl;
         break;
     }
 }
 
-No *SearchByCpf(No *treeByCPF, char cpf[])
+No *SearchByCpf(No *treeByCpf, char cpf[14])
 {
-    No *current = treeByCPF;
-    while (current != NULL)
+    /* No *current = treeByCpf;
+     while (current != NULL)
+     {
+         if (strcmp(cpf, current->info.cpf) == 0) // compara os valores do cpf, se for 0 são iguais
+         {
+             return current; // retorna a referência
+         }
+         else if (strcmp(cpf, current->info.cpf) < 0) // compara os valores do cpf, se for menor que 0, a primeira
+                                                      // string é menor que a segunda
+         {
+             return SearchByCpf(treeByCpf->left, cpf); // chama a função recursivamente indo para a esquerda da árvore
+         }
+         else if (strcmp(cpf, current->info.cpf) > 0) // compara os valores do cpf, se for maior que 0, a primeira
+                                                      // string é maior que a segunda
+         {
+             return SearchByCpf(treeByCpf->right, cpf); // chama a função recursivamente indo para a direita da árvore
+         }
+     }
+     return NULL; // retorna null se não encontrar nada
+     */
+
+    while (treeByCpf != NULL)
     {
-        if (strcmp(cpf, current->info.cpf) == 0) // compara os valores do cpf, se for 0 são iguais
+        if (strcmpi(cpf, treeByCpf->info.cpf) == 0) // compara os valores do cpf, se for 0 são iguais
         {
-            return current; // retorna a referência
+            return treeByCpf; // retorna a referência
         }
-        else if (strcmp(cpf, current->info.cpf) < 0) // compara os valores do cpf, se for menor que 0, a primeira
-                                                     // string é menor que a segunda
+        else if (strcmpi(cpf, treeByCpf->info.cpf) < 0) // compara os valores do cpf, se for menor que 0, a primeira
+                                                        // string é menor que a segunda
         {
-            return SearchByCpf(treeByCPF->left, cpf); // chama a função recursivamente indo para a esquerda da árvore
+            treeByCpf = treeByCpf->left; // indo para a esquerda da árvore
         }
-        else if (strcmp(cpf, current->info.cpf) > 0) // compara os valores do cpf, se for maior que 0, a primeira
-                                                     // string é maior que a segunda
+        else if (strcmpi(cpf, treeByCpf->info.cpf) > 0) // compara os valores do cpf, se for maior que 0, a primeira
+                                                        // string é maior que a segunda
         {
-            return SearchByCpf(treeByCPF->right, cpf); // chama a função recursivamente indo para a direita da árvore
+            treeByCpf = treeByCpf->right; // indo para a direita da árvore
         }
     }
     return NULL; // retorna null se não encontrar nada
+
+    /*while (treeByCpf != NULL)
+    {
+        if (cpf == treeByCpf->info.registration) // compara os valores do cpf, se for 0 são iguais
+        {
+            return treeByCpf; // retorna a referência
+        }
+        else if (cpf < treeByCpf->info.registration) // compara os valores do cpf, se for menor que 0, a primeira
+                                                     // string é menor que a segunda
+        {
+            treeByCpf = treeByCpf->left; // chama a função recursivamente indo para a esquerda da árvore
+            //cout << "Na esquerda: " << treeByCpf->info.cpf << endl;
+        }
+        else if (cpf > treeByCpf->info.registration) // compara os valores do cpf, se for maior que 0, a primeira
+                                                     // string é maior que a segunda
+        {
+            treeByCpf = treeByCpf->right; // chama a função recursivamente indo para a direita da árvore
+            //cout << "Na direita: " << treeByCpf->info.cpf << endl;
+        }
+    }
+    return NULL; // retorna null se não encontrar nada*/
 }
 
 No *SearchByName(No *treeByName, char name[])
@@ -337,7 +380,7 @@ int Add(Info empInfo)
         {
             current = current->left;
         }
-        else
+        else if (empInfo.registration > current->info.registration)
         {
             current = current->right;
         }
@@ -356,6 +399,134 @@ int Add(Info empInfo)
         return -1;
     }
     return 1;
+}
+
+void RemoveEmployee()
+{
+    system("cls");
+
+    int registration; // variável para guardar o valor da matricula do funcionário para remover
+
+    cout << "******************************************\n";
+    cout << "*           REMOVE FUNCIONÁRIO           *\n";
+    cout << "******************************************\n\n";
+
+    cout << "Informe o número de matricula: ";
+    cin >> registration; // lendo a matricula
+
+    // retornando mensagem se foi possivel remover o funcionário da árvore ou não
+    if (Remove(registration) == 1)
+    {
+        cout << "\nFuncionário removido com sucesso!" << endl;
+        Sleep(1500);
+    }
+    else
+    {
+        cout << "\nNão foi possivel remover." << endl;
+        Sleep(1500);
+    }
+}
+
+int Remove(int registration)
+{
+    No *current = root;
+    No *previous = NULL;
+    No *successor = NULL;
+    No *successor_previous = NULL;
+    int retorno = 0;
+
+    // removendo o funcionário comparando pelo número de matricula
+    while (current != NULL)
+    {
+        {
+            if (registration == current->info.registration)
+            {
+                retorno = 1;
+                break;
+            }
+            else if (registration < current->info.registration)
+            {
+                previous = current;
+                current = current->left;
+            }
+            else
+            {
+                previous = current;
+                current = current->right;
+            }
+        }
+    }
+    if (current == NULL)
+        return 0;
+    if (current->left == NULL && current->right == NULL)
+    {
+        if (previous == NULL)
+        {
+            root = NULL;
+        }
+        else if (previous->left == current)
+        {
+            previous->left = NULL;
+        }
+        else
+        {
+            previous->right = NULL;
+        }
+        delete current;
+    }
+    else if (current->left == NULL)
+    {
+        successor = current->right;
+        if (previous == NULL)
+        {
+            root = successor;
+        }
+        else if (previous->left == current)
+        {
+            previous->left = successor;
+        }
+        else
+        {
+            previous->right = successor;
+        }
+        delete current;
+    }
+    else if (current->right == NULL)
+    {
+        successor = current->left;
+        if (previous == NULL)
+        {
+            root = successor;
+        }
+        else if (previous->left == current)
+        {
+            previous->left = successor;
+        }
+        else
+        {
+            previous->right = successor;
+        }
+        delete current;
+    }
+    else
+    {
+        successor_previous = current;
+        successor = current->right;
+        while (successor->left != NULL)
+        {
+            successor_previous = successor;
+            successor = successor->left;
+        }
+        current->info.registration = successor->info.registration;
+        if (successor_previous == current)
+        {
+            successor_previous->right = successor->right;
+        }
+        else
+            successor_previous->left = successor->right;
+        delete successor;
+    }
+    return retorno;
 }
 
 void GetDataEmployee(No *node)

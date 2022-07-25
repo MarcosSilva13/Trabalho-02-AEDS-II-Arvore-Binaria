@@ -31,6 +31,8 @@ int main()
             system("cls");
             break;
         case 3:
+            RemoveEmployee();
+            system("cls");
             break;
         case 4:
             GetDataEmployee(root); // função que percorre os dados 
