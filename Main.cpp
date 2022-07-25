@@ -35,12 +35,11 @@ int main()
             system("cls");
             break;
         case 4:
-            GetDataEmployee(root); // função que percorre os dados 
-            system("pause");
+            PrintMenu(); 
             system("cls");
             break;
         }
-        // condição caso seja digitado um valor menor que 1 ou maior que 5
+        // condição caso seja digitado um valor inválido
         if (option < 1 || option > 5)
         {
             system("cls");

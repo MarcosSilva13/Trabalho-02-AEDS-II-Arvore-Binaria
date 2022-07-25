@@ -12,10 +12,10 @@ typedef struct Date
 
 typedef struct Address
 {
-    char street[30];
+    char street[31];
     int number;
-    char district[20];
-    char city[20];
+    char district[21];
+    char city[21];
     char state[3];
     char zipCode[10];
 };
@@ -23,9 +23,9 @@ typedef struct Address
 typedef struct Info
 {
     int registration;
-    char cpf[14];
-    char name[50];
-    char role[30];
+    char cpf[15];
+    char name[51];
+    char role[31];
     char telephone[15];
     Date birthDate;
     Address address;
@@ -48,7 +48,7 @@ void SearchHeader(int option); // Função para exibir os cabeçalhos do tipo de
 
 void Search(int option); // Função para o controle da pesquisa, indicando qual operação será executada
 
-No *SearchByCpf(No *treeByCpf, char cpf[14]); // Função que percorre a arvore procurando pelo cpf do funcionário
+No *SearchByCpf(No *treeByCpf, char cpf[]); // Função que percorre a arvore procurando pelo cpf do funcionário
 
 No *SearchByName(No *treeByName, char name[]); // Função que percorre a arvore procurando pelo nome do funcionário
 
@@ -58,9 +58,19 @@ int Add(Info empInfo); // Função que insere na árvore binária
 
 void RemoveEmployee(); // Função que le qual funcionário será removido
 
-int Remove(int registration); // Função que remove da árvore binária 
+int Remove(int registration); // Função que remove da árvore binária
 
-void GetDataEmployee(No *node); // Função que percorre os dados do funcionário
+void PrintMenu(); // Função que percorre os dados do funcionário
+
+void PrintHeader(int option); // Função para exibir os cabeçalhos do tipo de impressão
+
+void PrintOrder(int option); // Função para controle de qual ordem será imprimido os dados dos funcionários
+
+void InOrder(No *node); // Função para imprimir os dados em ordem
+
+void PreOrder(No *node); // Função para imprimir os dados em Pre ordem
+
+void PostOrder(No *node); // Função para imprimir os dados em Pós ordem
 
 void PrintData(No *node); // Função que imprimi os dados encontrados do funcionário
 
@@ -98,8 +108,7 @@ void SearchMenu()
         cout << "1 - Buscar por CPF\n2 - Buscar por Nome\n3 - Cancelar\n\nEscolha uma opção: ";
         cin >> option;
 
-        // condição caso seja digitado um valor menor que 1 ou maior que 3
-        if (option < 1 || option > 3)
+        if (option < 1 || option > 3) // condição caso seja digitado um valor inválido
         {
             system("cls");
             cout << "Opção inválida!" << endl;
@@ -134,10 +143,10 @@ void SearchHeader(int option)
     }
 }
 
-void Search(int option) // SENDO CHAR NÃO TA QUERENDO IR PARA A ESQUERDA DA ARVORE
+void Search(int option) 
 {
-    char cpf[14];      // variável para guardar o cpf do funcionário para a buscar
-    char name[50];     // variável para guardar o nome do funcionário para buscar
+    char cpf[15];      // variável para guardar o cpf do funcionário para a buscar
+    char name[51];     // variável para guardar o nome do funcionário para buscar
     No *result = NULL; // ponteiro para receber a referência da função SearchByCpf e SearchByName
 
     No *treeByCpf = root;  // ponteiro para receber a referência da raiz e ser usado na função SearchByCpf
@@ -149,7 +158,7 @@ void Search(int option) // SENDO CHAR NÃO TA QUERENDO IR PARA A ESQUERDA DA ARV
         SearchHeader(1); // função do cabeçalho
         cout << "Informe o cpf: ";
         cin.ignore();
-        cin.get(cpf, 14);                     // lendo o valor do cpf para busca
+        cin.get(cpf, 15);                     // lendo o valor do cpf para busca
         result = SearchByCpf(treeByCpf, cpf); // guardando a referência do resultado da busca
 
         if (result != NULL)
@@ -171,7 +180,7 @@ void Search(int option) // SENDO CHAR NÃO TA QUERENDO IR PARA A ESQUERDA DA ARV
         SearchHeader(2); // função do cabeçalho
         cout << "Informe o nome: ";
         cin.ignore();
-        cin.get(name, 50);                       // lendo o valor do nome para busca
+        cin.get(name, 51);                       // lendo o valor do nome para busca
         result = SearchByName(treeByName, name); // guardando a referência do resultado da busca
 
         if (result != NULL)
@@ -194,7 +203,8 @@ void Search(int option) // SENDO CHAR NÃO TA QUERENDO IR PARA A ESQUERDA DA ARV
     }
 }
 
-No *SearchByCpf(No *treeByCpf, char cpf[14])
+// SENDO CHAR NÃO TA QUERENDO IR PARA A ESQUERDA DA ARVORE
+No *SearchByCpf(No *treeByCpf, char cpf[])
 {
     /* No *current = treeByCpf;
      while (current != NULL)
@@ -235,32 +245,11 @@ No *SearchByCpf(No *treeByCpf, char cpf[14])
         }
     }
     return NULL; // retorna null se não encontrar nada
-
-    /*while (treeByCpf != NULL)
-    {
-        if (cpf == treeByCpf->info.registration) // compara os valores do cpf, se for 0 são iguais
-        {
-            return treeByCpf; // retorna a referência
-        }
-        else if (cpf < treeByCpf->info.registration) // compara os valores do cpf, se for menor que 0, a primeira
-                                                     // string é menor que a segunda
-        {
-            treeByCpf = treeByCpf->left; // chama a função recursivamente indo para a esquerda da árvore
-            //cout << "Na esquerda: " << treeByCpf->info.cpf << endl;
-        }
-        else if (cpf > treeByCpf->info.registration) // compara os valores do cpf, se for maior que 0, a primeira
-                                                     // string é maior que a segunda
-        {
-            treeByCpf = treeByCpf->right; // chama a função recursivamente indo para a direita da árvore
-            //cout << "Na direita: " << treeByCpf->info.cpf << endl;
-        }
-    }
-    return NULL; // retorna null se não encontrar nada*/
 }
 
 No *SearchByName(No *treeByName, char name[])
 {
-    No *current = treeByName;
+    /*No *current = treeByName;
     while (current != NULL)
     {
         if (strcmp(name, current->info.name) == 0) // compara os valores do nome, se for 0 são iguais
@@ -279,6 +268,25 @@ No *SearchByName(No *treeByName, char name[])
         }
     }
     return NULL; // retorna null se não encontrar nada
+    */
+   while (treeByName != NULL)
+    {
+        if (strcmpi(name, treeByName->info.name) == 0) // compara os valores do nome, se for 0 são iguais
+        {
+            return treeByName; // retorna a referência
+        }
+        else if (strcmpi(name, treeByName->info.name) < 0) // compara os valores do nome, se for menor que 0, a primeira
+                                                        // string é menor que a segunda
+        {
+            treeByName = treeByName->left; // indo para a esquerda da árvore
+        }
+        else if (strcmpi(name, treeByName->info.name) > 0) // compara os valores do nome, se for maior que 0, a primeira
+                                                        // string é maior que a segunda
+        {
+            treeByName = treeByName->right; // indo para a direita da árvore
+        }
+    }
+    return NULL; // retorna null se não encontrar nada
 }
 
 void Register()
@@ -294,15 +302,15 @@ void Register()
 
     cout << "\nInforme o cpf: ";
     cin.ignore();
-    cin.get(empInfo.cpf, 14); // lendo o cpf
+    cin.get(empInfo.cpf, 15); // lendo o cpf
 
     cout << "\nInforme o nome: ";
     cin.ignore();
-    cin.get(empInfo.name, 50); // lendo o nome
+    cin.get(empInfo.name, 51); // lendo o nome
 
     cout << "\nInforme o cargo: ";
     cin.ignore();
-    cin.get(empInfo.role, 30); // lendo o cargo
+    cin.get(empInfo.role, 31); // lendo o cargo
 
     cout << "\nInforme o telefone: ";
     cin.ignore();
@@ -319,18 +327,18 @@ void Register()
     cout << "\nInforme o endereco" << endl; // leitura do endereço
     cout << "Rua: ";
     cin.ignore();
-    cin.get(empInfo.address.street, 30); // lendo a rua
+    cin.get(empInfo.address.street, 31); // lendo a rua
 
     cout << "Número: ";
     cin >> empInfo.address.number; // lendo o número
 
     cout << "Bairro: ";
     cin.ignore();
-    cin.get(empInfo.address.district, 20); // lendo o bairro
+    cin.get(empInfo.address.district, 21); // lendo o bairro
 
     cout << "Cidade: ";
     cin.ignore();
-    cin.get(empInfo.address.city, 20); // lendo a cidade
+    cin.get(empInfo.address.city, 21); // lendo a cidade
 
     cout << "Estado (somente a sigla): ";
     cin.ignore();
@@ -529,18 +537,110 @@ int Remove(int registration)
     return retorno;
 }
 
-void GetDataEmployee(No *node)
+void PrintMenu()
 {
-    /*cout << "*******************************************\n";
-    cout << "*           DADOS DO FUNCIONÁRIO          *\n";
-    cout << "*                 EM ORDEM                *\n";
-    cout << "*******************************************\n\n";*/
+    int option = 0;
+    do
+    {
+        system("cls");
 
+        cout << "********************************************\n";
+        cout << "*        IMPRIMIR DADOS FUNCIONÁRIO        *\n";
+        cout << "********************************************\n\n";
+        cout << "1 - Em Ordem\n2 - Pré Ordem\n3 - Pós Ordem\n4 - Cancelar\n\nEscolha uma opção: ";
+        cin >> option;
+
+        if (option < 1 || option > 4) // condição caso seja digitado um valor inválido
+        {
+            system("cls");
+            cout << "Opção inválida!" << endl;
+            Sleep(1500);
+            system("cls");
+        }
+        else if (option > 0 || option < 4)
+        {
+            PrintOrder(option); // passando a opção escolhida para a função PrintOrder
+        }
+
+    } while (option != 4);
+}
+
+void PrintHeader(int option)
+{
+    system("cls");
+
+    switch (option)
+    {
+    case 1:
+        cout << "*****************************************\n";
+        cout << "*          IMPRIMINDO EM ORDEM          *\n";
+        cout << "*****************************************\n\n";
+        break;
+    case 2:
+        cout << "*********************************************\n";
+        cout << "*          IMPRIMINDO EM PRE ORDEM          *\n";
+        cout << "*********************************************\n\n";
+        break;
+    case 3:
+        cout << "*********************************************\n";
+        cout << "*          IMPRIMINDO EM PÓS ORDEM          *\n";
+        cout << "*********************************************\n\n";
+    default:
+        break;
+    }
+}
+
+void PrintOrder(int option)
+{
+    switch (option)
+    {
+    case 1:
+        PrintHeader(1);
+        InOrder(root); // Passando a raiz para imprimir em ordem
+        system("pause");
+        break;
+    case 2:
+        PrintHeader(2);
+        PreOrder(root); // Passando a raiz para imprimir em pre ordem
+        system("pause");
+        break;
+    case 3:
+        PrintHeader(3);
+        PostOrder(root); // Passando a raiz para imprimir em pós ordem
+        system("pause");
+        break;
+    default:
+        break;
+    }
+}
+
+void InOrder(No *node)
+{
     if (node != NULL)
     {
-        GetDataEmployee(node->left);
-        PrintData(node);
-        GetDataEmployee(node->right);
+        InOrder(node->left);
+        PrintData(node); // passando o no para a exibição dos dados para os quais ele aponta 
+        InOrder(node->right);
+    }
+}
+
+void PreOrder(No *node)
+{
+    if (node != NULL)
+    {
+        PrintData(node); // passando o no para a exibição dos dados para os quais ele aponta
+        PreOrder(node->left);
+        PreOrder(node->right);
+    }
+}
+
+void PostOrder(No *node)
+{
+    if (node != NULL)
+    {
+        PostOrder(node->left);
+        PostOrder(node->right);
+        PrintData(node); // passando o no para a exibição dos dados para os quais ele aponta
     }
 }
 
