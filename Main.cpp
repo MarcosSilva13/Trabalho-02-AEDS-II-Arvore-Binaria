@@ -31,16 +31,16 @@ int main()
             system("cls");
             break;
         case 3:
-            RemoveEmployee();
+            RemoveEmployee(); // função de remoção de funcionário
             system("cls");
             break;
         case 4:
-            PrintMenu(); 
+            PrintMenu(); // função do menu de exibição dos dados
             system("cls");
             break;
         }
-        // condição caso seja digitado um valor inválido
-        if (option < 1 || option > 5)
+        
+        if (option < 1 || option > 5) // condição caso seja digitado um valor inválido
         {
             system("cls");
             cout << "Opção inválida!" << endl;
