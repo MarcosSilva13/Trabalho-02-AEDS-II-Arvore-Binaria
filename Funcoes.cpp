@@ -38,7 +38,7 @@ typedef struct No
     No *right;
 };
 
-No *root = NULL;
+No *root = NULL; // Nó raiz
 
 void MainMenu(); // Menu principal do programa para a escolha das opcoes
 
@@ -60,7 +60,7 @@ void RemoveEmployee(); // Função que le qual funcionário será removido
 
 int Remove(int registration); // Função que remove da árvore binária
 
-void PrintMenu(); // Função que percorre os dados do funcionário
+void PrintMenu(); // Função do menu do tipo de impressão dos dados
 
 void PrintHeader(int option); // Função para exibir os cabeçalhos do tipo de impressão
 
@@ -206,6 +206,7 @@ void SearchEmployee(int option)
 }
 
 // O PROBLEMA TA NA COMPARAÇÃO DOS VALORES E A MATRICULA TAMBÉM
+// UMA DAS SAIDAS SERIA PERCORRER TODA A ÁRVORE, PORÉM LEVARIA UM GRANDE CUSTO 
 No *SearchEmployeeCpf(No *treeByCpf, char cpf[])
 {
     while (treeByCpf != NULL)
@@ -226,6 +227,7 @@ No *SearchEmployeeCpf(No *treeByCpf, char cpf[])
         }
     }
     return NULL; // retorna null se não encontrar nada
+    
 }
 
 No *SearchEmployeeName(No *treeByName, char name[])
