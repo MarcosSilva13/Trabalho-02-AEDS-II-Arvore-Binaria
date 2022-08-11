@@ -38,32 +38,32 @@ typedef struct No
     No *right;
 };
 
-No *root = NULL;
-
-No *treeByCpf = NULL; // ponteiro para árvore por cpf
+No *treeByCpf = NULL;  // ponteiro para árvore por cpf
 No *treeByName = NULL; // ponteiro para árvore por nome
 
 void MainMenu(); // Menu principal do programa para a escolha das opções
 
-void SearchMenu(); // Função para escolha da opção de pesquisa, se é por cpf ou por nome
+void SearchMenu(); // Função para escolha da opção de pesquisa, sendo por cpf ou por nome
 
 void SearchHeader(int option); // Função para exibir os cabeçalhos do tipo de pesquisa
 
 void SearchEmployee(int option); // Função para o controle da pesquisa, indicando qual operação será executada
 
-No *SearchEmployeeCpf(No *treeByCpf, char cpf[]); // Função que percorre a arvore procurando pelo cpf do funcionário
+No *SearchEmployeeCpf(No *treeByCpf, char cpf[]); // Função que percorre a arvore procurando pelo funcionário baseado no cpf
 
-No *SearchEmployeeName(No *treeByName, char name[]); // Função que percorre a arvore procurando pelo nome do funcionário
+No *SearchEmployeeName(No *treeByName, char name[]); // Função que percorre a arvore procurando pelo funcionário baseado no nome
 
-void Register(); // Função para cadastrar os dados do funcionário da struct
+void Register(); // Função para cadastrar os dados do funcionário na struct
 
-int AddEmployeeByCpf(Info empInfo); // Função que insere o funcionário na árvore binária pela ordem do cpf
+int AddEmployeeByCpf(Info empInfo); // Função que insere o funcionário na árvore pela ordem do cpf
 
-int AddEmployeeByName(Info empInfo); // Função que insere o funcionário na árvore binária pela ordem do nome
+int AddEmployeeByName(Info empInfo); // Função que insere o funcionário na árvore pela ordem do nome
 
-void RemoveEmployee(); // Função que le o dado de qual funcionário será removido
+void RemoveEmployee(); // Função para leitura do cpf do funcionário será removido
 
-int RemoveEmployeeByCpf(char cpf[]); // Função que remove da árvore binária
+int RemoveEmployeeByCpf(char cpf[]); // Função que remove o funcionário da árvore por cpf
+
+int RemoveEmployeeByName(char name[]); // Função que remove o funcionário da árvore por nome
 
 void PrintMenu(); // Função do menu do tipo de impressão dos dados
 
@@ -71,11 +71,11 @@ void PrintHeader(int option); // Função para exibir os cabeçalhos do tipo de 
 
 void PrintOrder(int option); // Função para controle de qual ordem será imprimido os dados dos funcionários
 
-void InOrder(No *node); // Função para imprimir os dados em ordem
+void InOrder(No *node); // Função para imprimir os dados em Ordem
 
-void PreOrder(No *node); // Função para imprimir os dados em Pre ordem
+void PreOrder(No *node); // Função para imprimir os dados em Pré Ordem
 
-void PostOrder(No *node); // Função para imprimir os dados em Pós ordem
+void PostOrder(No *node); // Função para imprimir os dados em Pós Ordem
 
 void PrintData(No *node); // Função que imprimi os dados encontrados do funcionário
 
@@ -121,7 +121,7 @@ void SearchMenu()
             Sleep(1500);
             system("cls");
         }
-        else if (option == 1 || option == 2)
+        else if (option == 1 || option == 2) // condição para valor válido
         {
             SearchEmployee(option); // passando a opção escolhida para a função SearchEmployee
         }
@@ -217,12 +217,12 @@ No *SearchEmployeeCpf(No *treeByCpf, char cpf[])
         else if (strcmp(cpf, treeByCpf->info.cpf) < 0) // compara os valores do cpf, se for menor que 0, a primeira
                                                        // string é menor que a segunda
         {
-            return SearchEmployeeCpf(treeByCpf->left, cpf); // chama a função recursivamente indo para a esquerda da árvore
+            return SearchEmployeeCpf(treeByCpf->left, cpf); // chama a função de forma recursiva indo para a esquerda da árvore
         }
         else if (strcmp(cpf, treeByCpf->info.cpf) > 0) // compara os valores do cpf, se for maior que 0, a primeira
                                                        // string é maior que a segunda
         {
-            return SearchEmployeeCpf(treeByCpf->right, cpf); // chama a função recursivamente indo para a direita da árvore
+            return SearchEmployeeCpf(treeByCpf->right, cpf); // chama a função de forma recursiva indo para a direita da árvore
         }
     }
     return NULL; // retorna null se não encontrar nada
@@ -230,7 +230,7 @@ No *SearchEmployeeCpf(No *treeByCpf, char cpf[])
 
 No *SearchEmployeeName(No *treeByName, char name[])
 {
-    while (treeByName != NULL)
+    if (treeByName != NULL)
     {
         if (strcmp(name, treeByName->info.name) == 0) // compara os valores do nome, se for 0 são iguais
         {
@@ -239,12 +239,12 @@ No *SearchEmployeeName(No *treeByName, char name[])
         else if (strcmp(name, treeByName->info.name) < 0) // compara os valores do nome, se for menor que 0, a primeira
                                                           // string é menor que a segunda
         {
-            return SearchEmployeeName(treeByName->left, name); // chama a função recursivamente indo para a esquerda da árvore
+            return SearchEmployeeName(treeByName->left, name); // chama a função de forma recursiva indo para a esquerda da árvore
         }
         else if (strcmp(name, treeByName->info.name) > 0) // compara os valores do nome, se for maior que 0, a primeira
                                                           // string é maior que a segunda
         {
-            return SearchEmployeeName(treeByName->right, name); // chama a função recursivamente indo para a direita da árvore
+            return SearchEmployeeName(treeByName->right, name); // chama a função de forma recursiva indo para a direita da árvore
         }
     }
     return NULL; // retorna null se não encontrar nada
@@ -374,7 +374,7 @@ int AddEmployeeByCpf(Info empInfo)
     return 1;
 }
 
-int AddEmployeeByName(Info empInfo) 
+int AddEmployeeByName(Info empInfo)
 {
     No *newNode = new No;
     newNode->info = empInfo;
@@ -396,24 +396,24 @@ int AddEmployeeByName(Info empInfo)
     {
         previous = current;
         if (strcmp(empInfo.name, current->info.name) < 0) // compara os valores do nome, se for menor que 0, a primeira
-                                                        // string é menor que a segunda
+                                                          // string é menor que a segunda
         {
             current = current->left;
         }
         else if (strcmp(empInfo.name, current->info.name) > 0) // compara os valores do nome, se for maior que 0, a primeira
-                                                             // string é maior que a segunda
+                                                               // string é maior que a segunda
         {
             current = current->right;
         }
     }
 
     if (strcmp(empInfo.name, previous->info.name) < 0) // compara os valores do nome, se for menor que 0, a primeira
-                                                     // string é menor que a segunda
+                                                       // string é menor que a segunda
     {
         previous->left = newNode;
     }
     else if (strcmp(empInfo.name, previous->info.name) > 0) // compara os valores do nome, se for maior que 0, a primeira
-                                                          // string é maior que a segunda
+                                                            // string é maior que a segunda
     {
         previous->right = newNode;
     }
@@ -424,8 +424,6 @@ int AddEmployeeByName(Info empInfo)
     return 1;
 }
 
-// PARA REMOVER PODE SER PELO CPF, DEPOIS CRIA UMA FUNÇÃO QUE ASSIM QUE REMOVER PEGAR OS DADOS DO FUNCIONARIO
-// E PASSAR O NOME PARA OUTRA FUNÇÃO QUE REMOVE PELO NOME
 void RemoveEmployee()
 {
     system("cls");
@@ -461,25 +459,33 @@ int RemoveEmployeeByCpf(char cpf[])
     No *successor_previous = NULL;
     int retorno = 0;
 
-    // removendo o funcionário comparando pelo número de matricula
+    // removendo o funcionário comparando pelo cpf
     while (current != NULL)
     {
         {
             if (strcmp(cpf, current->info.cpf) == 0) // compara os valores do cpf, se for 0 são iguais
-            {   
-                // salvar em um ponteiro os dados e passar para a outra função do nome
-                // e também comparar se deu retorno positivo, se der ai o retorno = 1 e boa
-                retorno = 1;
-                break;
+            {
+                // chama a função RemoveEmployeeByName passando o nome do funcionario relacionado ao cpf
+                // que foi encontrado na pesquisa por cpf, assim o mesmo funcionário é removido das duas árvores
+                if (RemoveEmployeeByName(current->info.name) == 1)
+                {
+                    retorno = 1;
+                    break;
+                }
+                else
+                {
+                    return 0;
+                    break;
+                }
             }
             else if (strcmp(cpf, current->info.cpf) < 0) // compara os valores do cpf, se for menor que 0, a primeira
-                                                        // string é menor que a segunda
+                                                         // string é menor que a segunda
             {
                 previous = current;
                 current = current->left;
             }
             else if (strcmp(cpf, current->info.cpf) > 0) // compara os valores do cpf, se for maior que 0, a primeira
-                                                        // string é maior que a segunda
+                                                         // string é maior que a segunda
             {
                 previous = current;
                 current = current->right;
@@ -488,6 +494,7 @@ int RemoveEmployeeByCpf(char cpf[])
     }
     if (current == NULL)
         return 0;
+
     if (current->left == NULL && current->right == NULL)
     {
         if (previous == NULL)
@@ -542,6 +549,7 @@ int RemoveEmployeeByCpf(char cpf[])
     {
         successor_previous = current;
         successor = current->right;
+
         while (successor->left != NULL)
         {
             successor_previous = successor;
@@ -549,13 +557,125 @@ int RemoveEmployeeByCpf(char cpf[])
         }
 
         current->info = successor->info;
-        
+
         if (successor_previous == current)
         {
             successor_previous->right = successor->right;
         }
         else
+        {
             successor_previous->left = successor->right;
+        }
+        delete successor;
+    }
+    return retorno;
+}
+
+int RemoveEmployeeByName(char name[])
+{
+    No *current = treeByName;
+    No *previous = NULL;
+    No *successor = NULL;
+    No *successor_previous = NULL;
+    int retorno = 0;
+
+    // removendo o funcionário comparando pelo nome
+    while (current != NULL)
+    {
+        {
+            if (strcmp(name, current->info.name) == 0) // compara os valores do nome, se for 0 são iguais
+            {
+                retorno = 1;
+                break;
+            }
+            else if (strcmp(name, current->info.name) < 0) // compara os valores do nome, se for menor que 0, a primeira
+                                                           // string é menor que a segunda
+            {
+                previous = current;
+                current = current->left;
+            }
+            else if (strcmp(name, current->info.name) > 0) // compara os valores do nome, se for maior que 0, a primeira
+                                                           // string é maior que a segunda
+            {
+                previous = current;
+                current = current->right;
+            }
+        }
+    }
+    if (current == NULL)
+        return 0;
+
+    if (current->left == NULL && current->right == NULL)
+    {
+        if (previous == NULL)
+        {
+            treeByName = NULL;
+        }
+        else if (previous->left == current)
+        {
+            previous->left = NULL;
+        }
+        else
+        {
+            previous->right = NULL;
+        }
+        delete current;
+    }
+    else if (current->left == NULL)
+    {
+        successor = current->right;
+        if (previous == NULL)
+        {
+            treeByName = successor;
+        }
+        else if (previous->left == current)
+        {
+            previous->left = successor;
+        }
+        else
+        {
+            previous->right = successor;
+        }
+        delete current;
+    }
+    else if (current->right == NULL)
+    {
+        successor = current->left;
+        if (previous == NULL)
+        {
+            treeByName = successor;
+        }
+        else if (previous->left == current)
+        {
+            previous->left = successor;
+        }
+        else
+        {
+            previous->right = successor;
+        }
+        delete current;
+    }
+    else
+    {
+        successor_previous = current;
+        successor = current->right;
+
+        while (successor->left != NULL)
+        {
+            successor_previous = successor;
+            successor = successor->left;
+        }
+
+        current->info = successor->info;
+
+        if (successor_previous == current)
+        {
+            successor_previous->right = successor->right;
+        }
+        else
+        {
+            successor_previous->left = successor->right;
+        }
         delete successor;
     }
     return retorno;
@@ -581,7 +701,7 @@ void PrintMenu()
             Sleep(1500);
             system("cls");
         }
-        else if (option > 0 || option < 4)
+        else if (option > 0 || option < 4) // condição para valor válido
         {
             PrintOrder(option); // passando a opção escolhida para a função PrintOrder
         }
@@ -620,17 +740,17 @@ void PrintOrder(int option)
     {
     case 1:
         PrintHeader(1);     // função do cabeçalho para impressão dos dados
-        InOrder(treeByCpf); // Passando a raiz para imprimir em ordem
+        InOrder(treeByCpf); // Passando o ponteiro treeByCpf para imprimir em ordem com base na árvore por cpf
         system("pause");
         break;
     case 2:
         PrintHeader(2);      // função do cabeçalho para impressão dos dados
-        PreOrder(treeByCpf); // Passando a raiz para imprimir em pre ordem
+        PreOrder(treeByCpf); // Passando o ponteiro treeByCpf para imprimir em pré ordem com base na árvore por cpf
         system("pause");
         break;
     case 3:
         PrintHeader(3);       // função do cabeçalho para impressão dos dados
-        PostOrder(treeByCpf); // Passando a raiz para imprimir em pós ordem
+        PostOrder(treeByCpf); // Passando o ponteiro treeByCpf para imprimir em pós ordem com base na árvore por cpf
         system("pause");
         break;
     default:
@@ -642,9 +762,9 @@ void InOrder(No *node)
 {
     if (node != NULL)
     {
-        InOrder(node->left);
-        PrintData(node); // passando o nó para a função PrintData para exibição dos dados
-        InOrder(node->right);
+        InOrder(node->left);  // indo para a esquerda da árvore
+        PrintData(node);      // passando o nó para a função PrintData para exibição dos dados
+        InOrder(node->right); // indo para a direita da árvore
     }
 }
 
@@ -652,9 +772,9 @@ void PreOrder(No *node)
 {
     if (node != NULL)
     {
-        PrintData(node); // passando o nó para a função PrintData para exibição dos dados
-        PreOrder(node->left);
-        PreOrder(node->right);
+        PrintData(node);       // passando o nó para a função PrintData para exibição dos dados
+        PreOrder(node->left);  // indo para a esquerda da árvore
+        PreOrder(node->right); // indo para a direita da árvore
     }
 }
 
@@ -662,9 +782,9 @@ void PostOrder(No *node)
 {
     if (node != NULL)
     {
-        PostOrder(node->left);
-        PostOrder(node->right);
-        PrintData(node); // passando o nó para a função PrintData para exibição dos dados
+        PostOrder(node->left);  // indo para a esquerda da árvore
+        PostOrder(node->right); // indo para a direita da árvore
+        PrintData(node);        // passando o nó para a função PrintData para exibição dos dados
     }
 }
 
