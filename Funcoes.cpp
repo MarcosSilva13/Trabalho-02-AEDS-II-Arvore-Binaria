@@ -39,6 +39,8 @@ typedef struct No
 };
 
 No *root = NULL; // Nó raiz
+No *treebycpf = NULL;
+No *treebyname = NULL;
 
 void MainMenu(); // Menu principal do programa para a escolha das opcoes
 
@@ -54,7 +56,7 @@ No *SearchEmployeeName(No *treeByName, char name[]); // Função que percorre a 
 
 void Register(); // Função para cadastrar os dados do funcionário da struct
 
-int Add(Info empInfo); // Função que insere na árvore binária
+int AddEmployeeByCpf(Info empInfo); // Função que insere o funcionário na árvore binária pela ordem do cpf
 
 void RemoveEmployee(); // Função que le qual funcionário será removido
 
@@ -73,7 +75,6 @@ void PreOrder(No *node); // Função para imprimir os dados em Pre ordem
 void PostOrder(No *node); // Função para imprimir os dados em Pós ordem
 
 void PrintData(No *node); // Função que imprimi os dados encontrados do funcionário
-
 
 // implementação das funções
 void MainMenu()
@@ -151,9 +152,6 @@ void SearchEmployee(int option)
     char name[51];     // variável para guardar o nome do funcionário para buscar
     No *result = NULL; // ponteiro para receber a referência da função SearchEmployeeCpf e SearchEmployeeName
 
-    No *treeByCpf = root;  // ponteiro para receber a referência da raiz e ser usado na função SearchEmployeeCpf
-    No *treeByName = root; // ponteiro para receber a referência da raiz e ser usado na função SearchEmployeeName
-
     switch (option)
     {
     case 1:
@@ -161,7 +159,7 @@ void SearchEmployee(int option)
         cout << "Informe o cpf: ";
         cin.ignore();
         cin.get(cpf, 15);                           // lendo o valor do cpf para busca
-        result = SearchEmployeeCpf(treeByCpf, cpf); // guardando a referência do resultado da busca
+        result = SearchEmployeeCpf(treebycpf, cpf); // guardando a referência do resultado da busca
 
         if (result != NULL) // condição para verificar se encontrou o funcionário
         {
@@ -183,7 +181,7 @@ void SearchEmployee(int option)
         cout << "Informe o nome: ";
         cin.ignore();
         cin.get(name, 51);                             // lendo o valor do nome para busca
-        result = SearchEmployeeName(treeByName, name); // guardando a referência do resultado da busca
+        result = SearchEmployeeName(treebyname, name); // guardando a referência do resultado da busca
 
         if (result != NULL) // condição para verificar se encontrou o funcionário
         {
@@ -205,11 +203,9 @@ void SearchEmployee(int option)
     }
 }
 
-// O PROBLEMA TA NA COMPARAÇÃO DOS VALORES E A MATRICULA TAMBÉM
-// UMA DAS SAIDAS SERIA PERCORRER TODA A ÁRVORE, PORÉM LEVARIA UM GRANDE CUSTO 
 No *SearchEmployeeCpf(No *treeByCpf, char cpf[])
 {
-    while (treeByCpf != NULL)
+    if (treeByCpf != NULL)
     {
         if (strcmp(cpf, treeByCpf->info.cpf) == 0) // compara os valores do cpf, se for 0 são iguais
         {
@@ -227,7 +223,6 @@ No *SearchEmployeeCpf(No *treeByCpf, char cpf[])
         }
     }
     return NULL; // retorna null se não encontrar nada
-    
 }
 
 No *SearchEmployeeName(No *treeByName, char name[])
@@ -312,7 +307,7 @@ void Register()
     cin.get(empInfo.address.zipCode, 10); // lendo o cep
 
     // retornando mensagem se foi possivel adicionar o funcionário na árvore ou não
-    if (Add(empInfo) == 1)
+    if (AddEmployeeByCpf(empInfo) == 1)
     {
         cout << "\nFuncionário cadastrado com sucesso!" << endl;
         Sleep(1500);
@@ -326,42 +321,46 @@ void Register()
     system("cls");
 }
 
-int Add(Info empInfo)
+int AddEmployeeByCpf(Info empInfo)
 {
     No *newNode = new No;
     newNode->info = empInfo;
     newNode->left = NULL;
     newNode->right = NULL;
 
-    if (root == NULL)
+    if (treebycpf == NULL)
     {
-        root = newNode;
+        treebycpf = newNode;
 
         return 1;
     }
 
-    No *current = root;
+    No *current = treebycpf;
     No *previous = NULL;
 
-    // inserindo na arvore comparando pelo número da matricula
+    // inserindo na arvore comparando pelo cpf do funcionário
     while (current != NULL)
     {
         previous = current;
-        if (empInfo.registration < current->info.registration)
+        if (strcmp(empInfo.cpf, current->info.cpf) < 0) // compara os valores do cpf, se for menor que 0, a primeira
+                                                        // string é menor que a segunda
         {
             current = current->left;
         }
-        else if (empInfo.registration > current->info.registration)
+        else if (strcmp(empInfo.cpf, current->info.cpf) > 0) // compara os valores do cpf, se for maior que 0, a primeira
+                                                             // string é maior que a segunda
         {
             current = current->right;
         }
     }
 
-    if (empInfo.registration < previous->info.registration)
+    if (strcmp(empInfo.cpf, previous->info.cpf) < 0) // compara os valores do cpf, se for menor que 0, a primeira
+                                                     // string é menor que a segunda
     {
         previous->left = newNode;
     }
-    else if (empInfo.registration > previous->info.registration)
+    else if (strcmp(empInfo.cpf, previous->info.cpf) > 0) // compara os valores do cpf, se for maior que 0, a primeira
+                                                          // string é maior que a segunda
     {
         previous->right = newNode;
     }
@@ -372,6 +371,8 @@ int Add(Info empInfo)
     return 1;
 }
 
+// PARA REMOVER PODE SER PELO CPF, DEPOIS CRIA UMA FUNÇÃO QUE ASSIM QUE REMOVER PEGAR OS DADOS DO FUNCIONARIO
+// E PASSAR O NOME PARA OUTRA FUNÇÃO QUE REMOVE PELO NOME
 void RemoveEmployee()
 {
     system("cls");
@@ -411,7 +412,9 @@ int Remove(int registration)
     {
         {
             if (registration == current->info.registration)
-            {
+            {   
+                // salvar em um ponteiro os dados e passar para a outra função do nome
+                // e também comparar se deu retorno positivo, se der ai o retorno = 1 e boa
                 retorno = 1;
                 break;
             }
@@ -488,7 +491,7 @@ int Remove(int registration)
             successor_previous = successor;
             successor = successor->left;
         }
-        current->info.registration = successor->info.registration;
+        current->info.registration = successor->info.registration; // talvez pegar so a struct sem o .
         if (successor_previous == current)
         {
             successor_previous->right = successor->right;
@@ -558,18 +561,18 @@ void PrintOrder(int option)
     switch (option)
     {
     case 1:
-        PrintHeader(1); // função do cabeçalho da impressão dos dados
-        InOrder(root); // Passando a raiz para imprimir em ordem
+        PrintHeader(1);     // função do cabeçalho para impressão dos dados
+        InOrder(treebycpf); // Passando a raiz para imprimir em ordem
         system("pause");
         break;
     case 2:
-        PrintHeader(2); // função do cabeçalho da impressão dos dados
-        PreOrder(root); // Passando a raiz para imprimir em pre ordem
+        PrintHeader(2);      // função do cabeçalho para impressão dos dados
+        PreOrder(treebycpf); // Passando a raiz para imprimir em pre ordem
         system("pause");
         break;
     case 3:
-        PrintHeader(3); // função do cabeçalho da impressão dos dados
-        PostOrder(root); // Passando a raiz para imprimir em pós ordem
+        PrintHeader(3);       // função do cabeçalho para impressão dos dados
+        PostOrder(treebycpf); // Passando a raiz para imprimir em pós ordem
         system("pause");
         break;
     default:
