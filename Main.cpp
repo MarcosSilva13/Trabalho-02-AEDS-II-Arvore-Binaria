@@ -17,7 +17,7 @@ int main()
         MainMenu(); // função do menu principal
 
         cout << "Escolha uma opção: ";
-        cin >> option;
+        cin >> option; // lendo a escolha
 
         system("cls");
 
@@ -27,7 +27,7 @@ int main()
             Register(); // função de cadastro
             break;
         case 2:
-            SearchMenu(); // função do menu de busca
+            SearchMenu(); // função de pesquisa
             system("cls");
             break;
         case 3:
@@ -35,7 +35,7 @@ int main()
             system("cls");
             break;
         case 4:
-            PrintMenu(); // função do menu de exibição dos dados
+            PrintMenu(); // função de exibição dos dados
             system("cls");
             break;
         }
