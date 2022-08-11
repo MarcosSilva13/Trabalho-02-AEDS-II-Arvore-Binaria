@@ -63,7 +63,7 @@ int AddEmployeeByName(Info empInfo); // Função que insere o funcionário na á
 
 void RemoveEmployee(); // Função que le o dado de qual funcionário será removido
 
-int Remove(int registration); // Função que remove da árvore binária
+int RemoveEmployeeByCpf(char cpf[]); // Função que remove da árvore binária
 
 void PrintMenu(); // Função do menu do tipo de impressão dos dados
 
@@ -430,17 +430,18 @@ void RemoveEmployee()
 {
     system("cls");
 
-    int registration; // variável para guardar o valor da matricula do funcionário para remover
+    char cpf[15]; // variável para guardar o valor do cpf do funcionário para remover
 
     cout << "******************************************\n";
     cout << "*           REMOVE FUNCIONÁRIO           *\n";
     cout << "******************************************\n\n";
 
-    cout << "Informe o número de matricula: ";
-    cin >> registration; // lendo a matricula
+    cout << "Informe o CPF do funcionário: ";
+    cin.ignore();
+    cin.get(cpf, 15); // lendo o cpf do funcionário que será removido
 
     // retornando mensagem se foi possivel remover o funcionário da árvore ou não
-    if (Remove(registration) == 1)
+    if (RemoveEmployeeByCpf(cpf) == 1)
     {
         cout << "\nFuncionário removido com sucesso!" << endl;
         Sleep(1500);
@@ -452,9 +453,9 @@ void RemoveEmployee()
     }
 }
 
-int Remove(int registration)
+int RemoveEmployeeByCpf(char cpf[])
 {
-    No *current = root;
+    No *current = treeByCpf;
     No *previous = NULL;
     No *successor = NULL;
     No *successor_previous = NULL;
@@ -464,19 +465,21 @@ int Remove(int registration)
     while (current != NULL)
     {
         {
-            if (registration == current->info.registration)
+            if (strcmp(cpf, current->info.cpf) == 0) // compara os valores do cpf, se for 0 são iguais
             {   
                 // salvar em um ponteiro os dados e passar para a outra função do nome
                 // e também comparar se deu retorno positivo, se der ai o retorno = 1 e boa
                 retorno = 1;
                 break;
             }
-            else if (registration < current->info.registration)
+            else if (strcmp(cpf, current->info.cpf) < 0) // compara os valores do cpf, se for menor que 0, a primeira
+                                                        // string é menor que a segunda
             {
                 previous = current;
                 current = current->left;
             }
-            else
+            else if (strcmp(cpf, current->info.cpf) > 0) // compara os valores do cpf, se for maior que 0, a primeira
+                                                        // string é maior que a segunda
             {
                 previous = current;
                 current = current->right;
@@ -489,7 +492,7 @@ int Remove(int registration)
     {
         if (previous == NULL)
         {
-            root = NULL;
+            treeByCpf = NULL;
         }
         else if (previous->left == current)
         {
@@ -506,7 +509,7 @@ int Remove(int registration)
         successor = current->right;
         if (previous == NULL)
         {
-            root = successor;
+            treeByCpf = successor;
         }
         else if (previous->left == current)
         {
@@ -523,7 +526,7 @@ int Remove(int registration)
         successor = current->left;
         if (previous == NULL)
         {
-            root = successor;
+            treeByCpf = successor;
         }
         else if (previous->left == current)
         {
@@ -544,7 +547,9 @@ int Remove(int registration)
             successor_previous = successor;
             successor = successor->left;
         }
-        current->info.registration = successor->info.registration; // talvez pegar so a struct sem o .
+
+        current->info = successor->info;
+        
         if (successor_previous == current)
         {
             successor_previous->right = successor->right;
