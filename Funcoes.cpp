@@ -38,11 +38,12 @@ typedef struct No
     No *right;
 };
 
-No *root = NULL; // Nó raiz
-No *treebycpf = NULL;
-No *treebyname = NULL;
+No *root = NULL;
 
-void MainMenu(); // Menu principal do programa para a escolha das opcoes
+No *treeByCpf = NULL; // ponteiro para árvore por cpf
+No *treeByName = NULL; // ponteiro para árvore por nome
+
+void MainMenu(); // Menu principal do programa para a escolha das opções
 
 void SearchMenu(); // Função para escolha da opção de pesquisa, se é por cpf ou por nome
 
@@ -58,7 +59,9 @@ void Register(); // Função para cadastrar os dados do funcionário da struct
 
 int AddEmployeeByCpf(Info empInfo); // Função que insere o funcionário na árvore binária pela ordem do cpf
 
-void RemoveEmployee(); // Função que le qual funcionário será removido
+int AddEmployeeByName(Info empInfo); // Função que insere o funcionário na árvore binária pela ordem do nome
+
+void RemoveEmployee(); // Função que le o dado de qual funcionário será removido
 
 int Remove(int registration); // Função que remove da árvore binária
 
@@ -101,7 +104,7 @@ void MainMenu()
 
 void SearchMenu()
 {
-    int option = 0; // variavel para escolha da opção de buscar funcionário
+    int option = 0; // variavel para escolha da opção de pesquisa do funcionário
 
     do
     {
@@ -120,7 +123,7 @@ void SearchMenu()
         }
         else if (option == 1 || option == 2)
         {
-            SearchEmployee(option); // passando a opção escolhida para a função Search
+            SearchEmployee(option); // passando a opção escolhida para a função SearchEmployee
         }
     } while (option != 3);
 }
@@ -148,8 +151,8 @@ void SearchHeader(int option)
 
 void SearchEmployee(int option)
 {
-    char cpf[15];      // variável para guardar o cpf do funcionário para a buscar
-    char name[51];     // variável para guardar o nome do funcionário para buscar
+    char cpf[15];      // variável para guardar o cpf do funcionário para pesquisa
+    char name[51];     // variável para guardar o nome do funcionário para pesquisa
     No *result = NULL; // ponteiro para receber a referência da função SearchEmployeeCpf e SearchEmployeeName
 
     switch (option)
@@ -158,8 +161,8 @@ void SearchEmployee(int option)
         SearchHeader(1); // função do cabeçalho da pesquisa
         cout << "Informe o cpf: ";
         cin.ignore();
-        cin.get(cpf, 15);                           // lendo o valor do cpf para busca
-        result = SearchEmployeeCpf(treebycpf, cpf); // guardando a referência do resultado da busca
+        cin.get(cpf, 15);                           // lendo o valor do cpf para pesquisa
+        result = SearchEmployeeCpf(treeByCpf, cpf); // guardando a referência do resultado da pesquisa
 
         if (result != NULL) // condição para verificar se encontrou o funcionário
         {
@@ -180,8 +183,8 @@ void SearchEmployee(int option)
         SearchHeader(2); // função do cabeçalho da pesquisa
         cout << "Informe o nome: ";
         cin.ignore();
-        cin.get(name, 51);                             // lendo o valor do nome para busca
-        result = SearchEmployeeName(treebyname, name); // guardando a referência do resultado da busca
+        cin.get(name, 51);                             // lendo o valor do nome para pesquisa
+        result = SearchEmployeeName(treeByName, name); // guardando a referência do resultado da pesquisa
 
         if (result != NULL) // condição para verificar se encontrou o funcionário
         {
@@ -307,7 +310,7 @@ void Register()
     cin.get(empInfo.address.zipCode, 10); // lendo o cep
 
     // retornando mensagem se foi possivel adicionar o funcionário na árvore ou não
-    if (AddEmployeeByCpf(empInfo) == 1)
+    if ((AddEmployeeByCpf(empInfo) == 1) && (AddEmployeeByName(empInfo) == 1))
     {
         cout << "\nFuncionário cadastrado com sucesso!" << endl;
         Sleep(1500);
@@ -328,14 +331,14 @@ int AddEmployeeByCpf(Info empInfo)
     newNode->left = NULL;
     newNode->right = NULL;
 
-    if (treebycpf == NULL)
+    if (treeByCpf == NULL)
     {
-        treebycpf = newNode;
+        treeByCpf = newNode;
 
         return 1;
     }
 
-    No *current = treebycpf;
+    No *current = treeByCpf;
     No *previous = NULL;
 
     // inserindo na arvore comparando pelo cpf do funcionário
@@ -360,6 +363,56 @@ int AddEmployeeByCpf(Info empInfo)
         previous->left = newNode;
     }
     else if (strcmp(empInfo.cpf, previous->info.cpf) > 0) // compara os valores do cpf, se for maior que 0, a primeira
+                                                          // string é maior que a segunda
+    {
+        previous->right = newNode;
+    }
+    else
+    {
+        return -1;
+    }
+    return 1;
+}
+
+int AddEmployeeByName(Info empInfo) 
+{
+    No *newNode = new No;
+    newNode->info = empInfo;
+    newNode->left = NULL;
+    newNode->right = NULL;
+
+    if (treeByName == NULL)
+    {
+        treeByName = newNode;
+
+        return 1;
+    }
+
+    No *current = treeByName;
+    No *previous = NULL;
+
+    // inserindo na arvore comparando pelo nome do funcionário
+    while (current != NULL)
+    {
+        previous = current;
+        if (strcmp(empInfo.name, current->info.name) < 0) // compara os valores do nome, se for menor que 0, a primeira
+                                                        // string é menor que a segunda
+        {
+            current = current->left;
+        }
+        else if (strcmp(empInfo.name, current->info.name) > 0) // compara os valores do nome, se for maior que 0, a primeira
+                                                             // string é maior que a segunda
+        {
+            current = current->right;
+        }
+    }
+
+    if (strcmp(empInfo.name, previous->info.name) < 0) // compara os valores do nome, se for menor que 0, a primeira
+                                                     // string é menor que a segunda
+    {
+        previous->left = newNode;
+    }
+    else if (strcmp(empInfo.name, previous->info.name) > 0) // compara os valores do nome, se for maior que 0, a primeira
                                                           // string é maior que a segunda
     {
         previous->right = newNode;
@@ -562,17 +615,17 @@ void PrintOrder(int option)
     {
     case 1:
         PrintHeader(1);     // função do cabeçalho para impressão dos dados
-        InOrder(treebycpf); // Passando a raiz para imprimir em ordem
+        InOrder(treeByCpf); // Passando a raiz para imprimir em ordem
         system("pause");
         break;
     case 2:
         PrintHeader(2);      // função do cabeçalho para impressão dos dados
-        PreOrder(treebycpf); // Passando a raiz para imprimir em pre ordem
+        PreOrder(treeByCpf); // Passando a raiz para imprimir em pre ordem
         system("pause");
         break;
     case 3:
         PrintHeader(3);       // função do cabeçalho para impressão dos dados
-        PostOrder(treebycpf); // Passando a raiz para imprimir em pós ordem
+        PostOrder(treeByCpf); // Passando a raiz para imprimir em pós ordem
         system("pause");
         break;
     default:
