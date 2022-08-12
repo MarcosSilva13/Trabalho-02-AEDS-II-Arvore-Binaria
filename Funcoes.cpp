@@ -71,11 +71,11 @@ void PrintHeader(int option); // Função para exibir os cabeçalhos do tipo de 
 
 void PrintOrder(int option); // Função para controle de qual ordem será imprimido os dados dos funcionários
 
-void InOrder(No *node); // Função para imprimir os dados em Ordem
+void InOrder(No *tree); // Função para imprimir os dados em Ordem
 
-void PreOrder(No *node); // Função para imprimir os dados em Pré Ordem
+void PreOrder(No *tree); // Função para imprimir os dados em Pré Ordem
 
-void PostOrder(No *node); // Função para imprimir os dados em Pós Ordem
+void PostOrder(No *tree); // Função para imprimir os dados em Pós Ordem
 
 void PrintData(No *node); // Função que imprimi os dados encontrados do funcionário
 
@@ -277,7 +277,7 @@ void Register()
     cin.ignore();
     cin.get(empInfo.telephone, 15); // lendo o telefone
 
-    cout << "\nInforme a data de nascimento" << endl; // leitura da data de nascimento
+    cout << "\nInforme a data de nascimento (Apenas valores númericos)" << endl; // leitura da data de nascimento
     cout << "Dia: ";
     cin >> empInfo.birthDate.day; // lendo o dia
     cout << "Mês: ";
@@ -758,33 +758,33 @@ void PrintOrder(int option)
     }
 }
 
-void InOrder(No *node)
+void InOrder(No *tree)
 {
-    if (node != NULL)
+    if (tree != NULL)
     {
-        InOrder(node->left);  // indo para a esquerda da árvore
-        PrintData(node);      // passando o nó para a função PrintData para exibição dos dados
-        InOrder(node->right); // indo para a direita da árvore
+        InOrder(tree->left);  // indo para a esquerda da árvore
+        PrintData(tree);      // passando o nó para a função PrintData para exibição dos dados
+        InOrder(tree->right); // indo para a direita da árvore
     }
 }
 
-void PreOrder(No *node)
+void PreOrder(No *tree)
 {
-    if (node != NULL)
+    if (tree != NULL)
     {
-        PrintData(node);       // passando o nó para a função PrintData para exibição dos dados
-        PreOrder(node->left);  // indo para a esquerda da árvore
-        PreOrder(node->right); // indo para a direita da árvore
+        PrintData(tree);       // passando o nó para a função PrintData para exibição dos dados
+        PreOrder(tree->left);  // indo para a esquerda da árvore
+        PreOrder(tree->right); // indo para a direita da árvore
     }
 }
 
-void PostOrder(No *node)
+void PostOrder(No *tree)
 {
-    if (node != NULL)
+    if (tree != NULL)
     {
-        PostOrder(node->left);  // indo para a esquerda da árvore
-        PostOrder(node->right); // indo para a direita da árvore
-        PrintData(node);        // passando o nó para a função PrintData para exibição dos dados
+        PostOrder(tree->left);  // indo para a esquerda da árvore
+        PostOrder(tree->right); // indo para a direita da árvore
+        PrintData(tree);        // passando o nó para a função PrintData para exibição dos dados
     }
 }
 
