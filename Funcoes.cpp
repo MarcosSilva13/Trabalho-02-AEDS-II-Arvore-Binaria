@@ -49,9 +49,9 @@ void SearchHeader(int option); // Função para exibir os cabeçalhos do tipo de
 
 void SearchEmployee(int option); // Função para o controle da pesquisa, indicando qual operação será executada
 
-No *SearchEmployeeCpf(No *treeByCpf, char cpf[]); // Função que percorre a arvore procurando pelo funcionário baseado no cpf
+No *SearchByCpf(No *treeByCpf, char cpf[]); // Função que percorre a arvore procurando pelo funcionário baseado no cpf
 
-No *SearchEmployeeName(No *treeByName, char name[]); // Função que percorre a arvore procurando pelo funcionário baseado no nome
+No *SearchByName(No *treeByName, char name[]); // Função que percorre a arvore procurando pelo funcionário baseado no nome
 
 void Register(); // Função para cadastrar os dados do funcionário na struct
 
@@ -153,7 +153,7 @@ void SearchEmployee(int option)
 {
     char cpf[15];      // variável para guardar o cpf do funcionário para pesquisa
     char name[51];     // variável para guardar o nome do funcionário para pesquisa
-    No *result = NULL; // ponteiro para receber a referência da função SearchEmployeeCpf e SearchEmployeeName
+    No *result = NULL; // ponteiro para receber a referência da função SearchByCpf e SearchByName
 
     switch (option)
     {
@@ -162,7 +162,7 @@ void SearchEmployee(int option)
         cout << "Informe o cpf: ";
         cin.ignore();
         cin.get(cpf, 15);                           // lendo o valor do cpf para pesquisa
-        result = SearchEmployeeCpf(treeByCpf, cpf); // guardando a referência do resultado da pesquisa
+        result = SearchByCpf(treeByCpf, cpf); // guardando a referência do resultado da pesquisa
 
         if (result != NULL) // condição para verificar se encontrou o funcionário
         {
@@ -184,7 +184,7 @@ void SearchEmployee(int option)
         cout << "Informe o nome: ";
         cin.ignore();
         cin.get(name, 51);                             // lendo o valor do nome para pesquisa
-        result = SearchEmployeeName(treeByName, name); // guardando a referência do resultado da pesquisa
+        result = SearchByName(treeByName, name); // guardando a referência do resultado da pesquisa
 
         if (result != NULL) // condição para verificar se encontrou o funcionário
         {
@@ -206,7 +206,7 @@ void SearchEmployee(int option)
     }
 }
 
-No *SearchEmployeeCpf(No *treeByCpf, char cpf[])
+No *SearchByCpf(No *treeByCpf, char cpf[])
 {
     if (treeByCpf != NULL)
     {
@@ -217,18 +217,18 @@ No *SearchEmployeeCpf(No *treeByCpf, char cpf[])
         else if (strcmp(cpf, treeByCpf->info.cpf) < 0) // compara os valores do cpf, se for menor que 0, a primeira
                                                        // string é menor que a segunda
         {
-            return SearchEmployeeCpf(treeByCpf->left, cpf); // chama a função de forma recursiva indo para a esquerda da árvore
+            return SearchByCpf(treeByCpf->left, cpf); // chama a função de forma recursiva indo para a esquerda da árvore
         }
         else if (strcmp(cpf, treeByCpf->info.cpf) > 0) // compara os valores do cpf, se for maior que 0, a primeira
                                                        // string é maior que a segunda
         {
-            return SearchEmployeeCpf(treeByCpf->right, cpf); // chama a função de forma recursiva indo para a direita da árvore
+            return SearchByCpf(treeByCpf->right, cpf); // chama a função de forma recursiva indo para a direita da árvore
         }
     }
     return NULL; // retorna null se não encontrar nada
 }
 
-No *SearchEmployeeName(No *treeByName, char name[])
+No *SearchByName(No *treeByName, char name[])
 {
     if (treeByName != NULL)
     {
@@ -239,12 +239,12 @@ No *SearchEmployeeName(No *treeByName, char name[])
         else if (strcmp(name, treeByName->info.name) < 0) // compara os valores do nome, se for menor que 0, a primeira
                                                           // string é menor que a segunda
         {
-            return SearchEmployeeName(treeByName->left, name); // chama a função de forma recursiva indo para a esquerda da árvore
+            return SearchByName(treeByName->left, name); // chama a função de forma recursiva indo para a esquerda da árvore
         }
         else if (strcmp(name, treeByName->info.name) > 0) // compara os valores do nome, se for maior que 0, a primeira
                                                           // string é maior que a segunda
         {
-            return SearchEmployeeName(treeByName->right, name); // chama a função de forma recursiva indo para a direita da árvore
+            return SearchByName(treeByName->right, name); // chama a função de forma recursiva indo para a direita da árvore
         }
     }
     return NULL; // retorna null se não encontrar nada
